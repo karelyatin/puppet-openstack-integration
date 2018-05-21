@@ -154,6 +154,8 @@ else
 fi
 
 install_puppet
+sudo cp /usr/share/puppet/locale/config.yaml /usr/share/locale/config.yaml
+sudo sed -ie "/libmodnss.so/a 'wsgi' => 'mod_wsgi_python3.so'," /usr/share/openstack-puppet/modules/apache/manifests/params.pp
 PUPPET_FULL_PATH=$(which puppet)
 if [ "${MANAGE_HIERA}" = true ]; then
   configure_hiera

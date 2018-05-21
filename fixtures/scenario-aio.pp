@@ -14,11 +14,11 @@
 # limitations under the License.
 #
 
-if ($::os_package_type == 'debian') {
+if ($::os_package_type != 'debian') {
   include ::apache::params
   class { '::apache':
     mod_packages => merge($::apache::params::mod_packages, {
-      'wsgi' => 'libapache2-mod-wsgi-py3',
+      'wsgi' => 'python3-mod_wsgi',
     })
   }
 }
@@ -27,14 +27,10 @@ include ::openstack_integration
 include ::openstack_integration::rabbitmq
 include ::openstack_integration::mysql
 include ::openstack_integration::keystone
-include ::openstack_integration::glance
-include ::openstack_integration::neutron
-include ::openstack_integration::nova
-include ::openstack_integration::cinder
-include ::openstack_integration::horizon
 include ::openstack_integration::provision
 
 class { '::openstack_integration::tempest':
-  horizon => true,
-  cinder  => true,
+  glance => false,
+  nova => false,
+  neutron => false,
 }
