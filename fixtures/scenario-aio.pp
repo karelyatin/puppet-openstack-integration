@@ -27,7 +27,6 @@ include ::openstack_integration
 include ::openstack_integration::rabbitmq
 include ::openstack_integration::mysql
 include ::openstack_integration::keystone
-include ::openstack_integration::provision
 
 class { '::openstack_integration::tempest':
   glance => false,
