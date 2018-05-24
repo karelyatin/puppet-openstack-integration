@@ -28,6 +28,9 @@ gem install fast_gettext -v '< 1.2.0' --verbose
 # puppet_forge 2.2.7 has a dependency on semantic_puppet ~> 1.0
 # which is not compatible with dependency of latest r10k on semantic_puppet ~> 0.1.0
 gem install puppet_forge -v '= 2.2.6' --verbose
+# puppet report is not working with current version in fedora(>3.0),
+# possible cause:- https://github.com/ruby/psych/commit/43fa4aa38492c80080efa61aa4b7bee422792bc7
+gem install psych -v '< 2.0.12' --verbose
 gem install r10k --no-ri --no-rdoc --verbose
 
 # make sure there is no puppet module pre-installed
