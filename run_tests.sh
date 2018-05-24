@@ -26,7 +26,8 @@ export ADD_SWAP=${ADD_SWAP:-true}
 export SWAP_SIZE_GB=${SWAP_SIZE_GB:-4}
 export HIERA_CONFIG=${HIERA_CONFIG:-${SCRIPT_DIR}/hiera/hiera.yaml}
 export MANAGE_HIERA=${MANAGE_HIERA:-true}
-export PUPPET_ARGS="${PUPPET_ARGS} --detailed-exitcodes --color=false --test --summarize --trace --hiera_config ${HIERA_CONFIG} --logdest ${WORKSPACE}/puppet.log"
+# Do not summarize puppet run, rubygems requires rubygem-psych and is installed via package and is used, last commit to install psych < 2.0.12 is # not working
+export PUPPET_ARGS="${PUPPET_ARGS} --detailed-exitcodes --color=false --test --trace --hiera_config ${HIERA_CONFIG} --logdest ${WORKSPACE}/puppet.log"
 export DISTRO=$(lsb_release -c -s)
 # If openstack/tempest is broken on master, we can pin the repository to a specific commit
 # by using the following line:
