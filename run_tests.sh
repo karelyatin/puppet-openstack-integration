@@ -26,8 +26,7 @@ export ADD_SWAP=${ADD_SWAP:-true}
 export SWAP_SIZE_GB=${SWAP_SIZE_GB:-4}
 export HIERA_CONFIG=${HIERA_CONFIG:-${SCRIPT_DIR}/hiera/hiera.yaml}
 export MANAGE_HIERA=${MANAGE_HIERA:-true}
-# Do not summarize puppet run, rubygems requires rubygem-psych and is installed via package and is used, last commit to install psych < 2.0.12 is # not working
-export PUPPET_ARGS="${PUPPET_ARGS} --detailed-exitcodes --color=false --test --trace --hiera_config ${HIERA_CONFIG} --logdest ${WORKSPACE}/puppet.log"
+export PUPPET_ARGS="${PUPPET_ARGS} --detailed-exitcodes --color=false --test --summarize --trace --hiera_config ${HIERA_CONFIG} --logdest ${WORKSPACE}/puppet.log"
 export DISTRO=$(lsb_release -c -s)
 # If openstack/tempest is broken on master, we can pin the repository to a specific commit
 # by using the following line:
@@ -157,6 +156,11 @@ fi
 install_puppet
 sudo cp /usr/share/puppet/locale/config.yaml /usr/share/locale/config.yaml
 sudo sed -ie "/libmodnss.so/a 'wsgi' => 'mod_wsgi_python3.so'," /usr/share/openstack-puppet/modules/apache/manifests/params.pp
+# psych current version is fedora has issues
+# revert https://github.com/ruby/psych/commit/43fa4aa38492c80080efa61aa4b7bee422792bc7
+sudo sed -i 's/emit_coder c, o/emit_coder c/' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
+sudo sed -i '/return unless/d' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
+sudo sed -i 's/register o, @emitter.start_mapping(nil, c.tag, c.implicit, c.style)/@emitter.start_mapping nil, c.tag, c.implicit, c.style/' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
 PUPPET_FULL_PATH=$(which puppet)
 if [ "${MANAGE_HIERA}" = true ]; then
   configure_hiera
