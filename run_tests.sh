@@ -156,11 +156,12 @@ fi
 install_puppet
 sudo cp /usr/share/puppet/locale/config.yaml /usr/share/locale/config.yaml
 sudo sed -ie "/libmodnss.so/a 'wsgi' => 'mod_wsgi_python3.so'," /usr/share/openstack-puppet/modules/apache/manifests/params.pp
-# psych current version is fedora has issues
-# revert https://github.com/ruby/psych/commit/43fa4aa38492c80080efa61aa4b7bee422792bc7
-sudo sed -i 's/emit_coder c, o/emit_coder c/' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
-sudo sed -i '/return unless/d' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
-sudo sed -i 's/register o, @emitter.start_mapping(nil, c.tag, c.implicit, c.style)/@emitter.start_mapping nil, c.tag, c.implicit, c.style/' /usr/share/gems/gems/psych-3.0.2/lib/psych/visitors/yaml_tree.rb
+# reporting in fedora is broken
+# https://tickets.puppetlabs.com/browse/PUP-8892
+sudo tee -a /etc/puppet/puppet.conf <<EOF
+[main]
+report=false
+EOF
 PUPPET_FULL_PATH=$(which puppet)
 if [ "${MANAGE_HIERA}" = true ]; then
   configure_hiera
